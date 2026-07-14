@@ -3,46 +3,52 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <title>Spagbol interpreter</title>
+    <link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <h1>Spagbol Interpreter</h1>
-    <p>An esoteric language created by Liam Latz. Read about it on <a href="">Github.</a></p>
-    <canvas id="visualise" width="600" height="300" style="border: 2px solid rgba(0, 0, 0, 0); position: absolute; background-color: #00000000; pointer-events: none;"></canvas>
-    <textarea name="" id="input-text-area" cols="80" rows="20">
-                                                                                     
- *--------------------\                                                                          
-*---------------------\                                                     
-                      |                                                     
-                      |
-                      |
-                      |
-                      |  
-                      |                                                    
-          /--{1}-/----"--(-)--x                                                      
-     *-{2}<      |    |                                                      
-          |      |    x                                                      
-          |      |                                                                                                                       
-          |      |                                                            
-          |      |                                                            
-          \------/                           
-    </textarea>
-    <br>
-    <button id="step-program">Step</button>
-    <button id="start-program">Start</button>
-    <button id="stop-program">Stop</button>
-    <button id="restart-program">Restart</button>
-    <button id="calculate-program">Instant</button>
-    |
-    Tick rate: <input type="number" id="tick" value="50" style="width: 4rem;"> /s
-    |    
-    cycles: <span id="cycles">0</span>
-    |
-    <span>colourful workers:</span>
-    <input type="checkbox" name="" id="colourful-workers">
+    <h1>Spagbol</h1>
+    <p>An esoteric programming language created by Liam Latz. Read about it and see example programs on <a href="https://github.com/Round747/spagbol-interpreter">Github.</a></p>
+    <div id="code-container">
+<textarea name="" id="input-text-area" cols="80" rows="20">
+                   /----------------------------------------------------------\
+                   |                             /-------------------(-)-x    |
+                   |                         /---<                            |
+                   |             x x         |   \---{0}----\                 |
+                   |   /--{""}--{|+|}--{-=""}<      /-------\    /-------\    /---\
+                   |   |         | |         \--{1}-/    /-{|=1}-<       |    | x |
+        /----------/   |         | \-----------------\   |  x    \--(-)--\-{-=|}< |
+*--{$}--<              \-v-------+-------------------+---/                    | @ |
+        \---:---\        |       \-----------\       \----------\             \---/
+                |    x   |                   |       /---{""}---/           
+          /-----\    |   |                /--+--{-=0}<          |           
+*--{1}-/--+--{-<|}---<   \-v----/--{->0}--<  |       \-{"Buzz"}-/           
+       |  \-----/    |     |    |         |  |
+       |             |     |    \--{--5}--/  \---------------\
+       \------:------^-----<                      /---{""}---/
+                           |              /--{-=0}<          |
+                           \----/--{->0}--<       \-{"Fizz"}-/
+                                |         |      
+                                \--{--3}--/
+</textarea>
+        <canvas id="visualise"></canvas>
+    </div>
 
-    <p><b>Output:</b></p>
-    <div id="output"></div>
+    <br>
+    <div class="button" id="step-program">Step</div><div class="button" id="start-program">Start</div><div class="button" id="stop-program">Stop</div><div class="button" id="restart-program">Restart</div>
+    <div class="vr"></div>
+    Tick rate: <input type="number" id="tick" value="50" style="width: 4rem;"> /s
+    <div class="vr"></div>
+        
+    cycles: <span id="cycles">0</span>
+    <div class="vr"></div>
+    <br>
+    <div class="button" id="calculate-program">Instant</div>
+    <span style="margin-left: 0.25rem;">colourful workers:</span>
+    <input type="checkbox" name="" id="colourful-workers">
+    <h2>Output</h2>
+    <hr>
+    <table id="output"></table>
 
 </body>
 
