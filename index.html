@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <h1>Spagbol Interpreter</h1>
+    <p>An esoteric language created by Liam Latz. Read about it on <a href="">Github.</a></p>
+    <canvas id="visualise" width="600" height="300" style="border: 2px solid rgba(0, 0, 0, 0); position: absolute; background-color: #00000000; pointer-events: none;"></canvas>
+    <textarea name="" id="input-text-area" cols="80" rows="20">
+                                                                                     
+ *--------------------\                                                                          
+*---------------------\                                                     
+                      |                                                     
+                      |
+                      |
+                      |
+                      |  
+                      |                                                    
+          /--{1}-/----"--(-)--x                                                      
+     *-{2}<      |    |                                                      
+          |      |    x                                                      
+          |      |                                                                                                                       
+          |      |                                                            
+          |      |                                                            
+          \------/                           
+    </textarea>
+    <br>
+    <button id="step-program">Step</button>
+    <button id="start-program">Start</button>
+    <button id="stop-program">Stop</button>
+    <button id="restart-program">Restart</button>
+    <button id="calculate-program">Instant</button>
+    |
+    Tick rate: <input type="number" id="tick" value="50" style="width: 4rem;"> /s
+    |    
+    cycles: <span id="cycles">0</span>
+    |
+    <span>colourful workers:</span>
+    <input type="checkbox" name="" id="colourful-workers">
+
+    <p><b>Output:</b></p>
+    <div id="output"></div>
+
+</body>
+
+<script src="bundle.js"></script>
+</html>
