@@ -27,6 +27,7 @@ All programs in Spagbol can be created with characters on a regular keyboard.
                                  *----{|/|}--(-)--x
                                        x x
 ```
+([See more example programs](#example-programs))
 
 Spagbol uses a total of 24 different command characters, as well as any string or number literal.
 

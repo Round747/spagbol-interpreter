@@ -394,7 +394,7 @@ export class IncrementDataTile extends Spagbol.Tile
         if(typeof worker.dataValue == "string")
         {
             // cannot increment a string
-            OutputError("Cant increment a string");
+            OutputError("[Interpreter]: Cannot increment a string");
             return;
         }
 
@@ -419,7 +419,7 @@ export class DecrementDataTile extends Spagbol.Tile
         if(typeof worker.dataValue == "string")
         {
             // cannot decrement a string
-            OutputError("Cant decrement a string");
+            OutputError("[Interpreter]: Cannot decrement a string");
             return;
         }
 

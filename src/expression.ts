@@ -82,7 +82,7 @@ export class Expression
 
         if(this.operator == null && this.rhs != null || this.operator != null && this.rhs == null)
         {
-            console.log("invalid expression (throw error)");
+            console.log("[Interpreter]: invalid expression.");
             return;
         }
 

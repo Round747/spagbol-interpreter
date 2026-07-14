@@ -11,6 +11,11 @@ let isRunningInstant = false;
 
 export function InitialiseProgram()
 {
+    cycles = 0;
+    cyclesElement.textContent = cycles.toString();
+    ClearConsole();
+    CalculateCanvasSize();
+
     // remove all workers
     SetAllWorkers([]);
     SetAllNewWorkers([]);
@@ -161,34 +166,44 @@ const output = document.getElementById("output");
 
 export function OutputPrint(message: string)
 {
-    let newElement = document.createElement("p");
-    newElement.innerHTML = message;
+    let newElement = document.createElement("tr");
+    newElement.innerHTML = "<td>" + message + "</td";
     output!.appendChild(newElement);
 }
 
 export function OutputError(message: string)
 {
-    let newElement = document.createElement("p");
+    let newElement = document.createElement("tr");
     newElement.style.color = "red";
-    newElement.innerHTML = message;
+    newElement.innerHTML = "<td>" + message + "</td";
     output!.appendChild(newElement);
 
     StopProgram();
 }
 
+function ClearConsole()
+{
+    output!.innerHTML = "";
+}
+
 const canvas: HTMLCanvasElement = <HTMLCanvasElement>document.getElementById("visualise")!;
 const context = canvas.getContext("2d")!;
-context.fillStyle = "#00000033";
 
-const cellHeight = 15.5;
-const cellWidth = 7.33;
+const cellHeight = 19;
+const cellWidth = 8.8;
 
 const colourfulWorkers: HTMLInputElement = <HTMLInputElement>document.getElementById("colourful-workers");
+
+function CalculateCanvasSize()
+{
+    canvas.width = inputArea.offsetWidth;
+    canvas.height = inputArea.offsetHeight;
+}
 
 function DrawWorkerOnCanvas(worker: Spagbol.Worker)
 {    
     if(colourfulWorkers.checked) context.fillStyle = "#" + worker.hexColour + "aa"
-    else context.fillStyle = "#00000033";
+    else context.fillStyle = "#ffffff55";
 
     context.fillRect((worker.position.x * cellWidth) - cellWidth, (worker.position.y * cellHeight) - cellHeight, cellWidth, cellHeight); // draw to visualiser
 }
