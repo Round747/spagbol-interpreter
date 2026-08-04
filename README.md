@@ -1,11 +1,9 @@
 # Spagbol Interpreter
 
-Spagbol is an esoteric programming language (esolang) meant to resemble a flow chart.  
+Spagbol is an esoteric programming language (esolang) meant to resemble a flow chart or a circuit board.  
 It is called Spagbol because scripts often resemble "Wire spaghetti" or "Spaghetti code."
 
-
-
-Multiple workers can be created, and run parallel to or interact with each other. It can query the user for input, and output information to a console.
+The language features workers that hold values, and travel along paths. multiple workers can be created, and run parallel to or interact with each other. It can query the user for input, and output information to a console.
 
 All programs in Spagbol can be created with characters on a regular keyboard.
 
@@ -36,7 +34,7 @@ All programs in Spagbol can be created with characters on a regular keyboard.
 
 This interpreter was written in Typescript, meaning that it utilises Javascripts <code>number</code> and <code>string</code> types for workers values. Running the program at a high ticks-per-second may also not be accurate, as it uses Javascripts <code>setInterval</code> method.
 
-### Controls
+### Interpreter controls
 
 - <code>Start</code> - Runs the program. Each worker will move at the specified tick speed.
 - <code>Stop</code> - Pauses the program. It can be continued with the <code>Start</code> button, or stepped with the <code>Step</code> button.
@@ -44,7 +42,22 @@ This interpreter was written in Typescript, meaning that it utilises Javascripts
 - <code>Restart</code> - If the program is running, it will be reset. The code in the input box will be re-initialised.
 - <code>Instant</code> - The program will be run at the maximum possible speed. Note that this is executed in a while loop, meaning that if the users code never correctly terminates, the browser will freeze.
 - <code>Colourful workers</code> - Toggling this gives each worker a unique colour, useful for tracking a single worker when debugging a program.
+- <code>Additive</code> - Makes the console output a single string, with no gaps between seperate print commands, rather than each command being a row in a table.
 
+### Editor
+
+This project also contains an in-depth code editor suited for creating programs in Spagbol.  
+It features directional typing and inserting, dragging and copying code, and undo and redo buttons.
+
+The program is automatically saved to local storage when edited, so that programs are not lost between sessions or a page refresh. The undo stack is also saved.
+
+### Controls
+
+- Use the arrow keys to move the cursor, or set its position with left click.
+- Typing will insert characters at the specified location, and move the cursor in the direction that it was last moving, allowing for typing backwards and upwards.
+- Typing a mirror tile <code>\\</code> or <code>/</code> will change the typing direction respectively, allowing for easy path drawing.
+- Click and drag an area of the program to select it. You can drag this selection to move that portion of the program, or hold left control and drag to duplicate it.
+- Pressing Ctrl+Z or Ctrl+Shift+Z Will undo or redo changes made to the code.
 
 # About the language
 
