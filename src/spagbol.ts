@@ -284,4 +284,19 @@ export class Vector2
     {
         return(this.x + ", " + this.y);
     }
+
+    public Subtract(vector: Vector2)
+    {
+        return new Vector2(this.x - vector.x, this.y - vector.y)
+    }
+
+    public Add(vector: Vector2): Vector2
+    {
+        return new Vector2(this.x + vector.x, this.y + vector.y)
+    }
+
+    public Equals(vector: Vector2)
+    {
+        return this.x == vector.x && this.y == vector.y;
+    }
 }

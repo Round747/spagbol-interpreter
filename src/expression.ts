@@ -40,7 +40,7 @@ export class Expression
     {
         if(!this.CanCalculateResult()) return;
 
-        console.log("Can calculate result");
+        // console.log("Can calculate result");
         
 
         let result: number | string | boolean | null = null;
@@ -51,7 +51,7 @@ export class Expression
             // either variable or input
             if(this.lhs instanceof Spagbol.Tile) 
             {
-                console.log("lhs is a tile");
+                // console.log("lhs is a tile");
                 
                 if(this.lhs.character == "$")
                 {
@@ -66,11 +66,38 @@ export class Expression
 
             if(this.type == ExpressionType.Assignment)
             {
-                this.owner!.dataValue = result; // set result to owner
+                this.owner!.dataValue = result; // set result to owner, since it cant be a bool without an operator
             }
             else if (this.type == ExpressionType.Print)
             {
                 OutputPrint(result.toString());
+            }
+            else if (this.type == ExpressionType.Index)
+            {
+                if(typeof result != "number") 
+                {
+                    OutputError("[Interpreter]: Cannot index by a " + typeof result + ".");
+                    return;
+                }
+
+                if(typeof this.owner!.dataValue != "string")
+                {
+                    OutputError("[Interpreter]: Cannot index a " + typeof this.owner!.dataValue + ".");
+                    return;
+                }
+
+                if(result < 0)
+                {
+                    OutputError("[Interpreter]: Index cannot be less than zero.")
+                    return;
+                }
+                else if (result > (<string>this.owner?.dataValue).length)
+                {
+                    OutputError("[Interpreter]: Index cannot be longer than the string.");
+                    return;
+                }
+
+                this.owner!.dataValue = (<string>this.owner?.dataValue)[result];
             }
 
             this.resultCalculated = true;
@@ -168,7 +195,7 @@ export class Expression
                 let gTRhs: number = typeof rhsValue == "string" ? rhsValue.length : rhsValue;
                 
                 result = gTLhs > gTRhs;        
-                if(result) console.log(gTLhs + ">" + gTRhs);
+                // if(result) console.log(gTLhs + ">" + gTRhs);
                         
                 break;
 
@@ -187,7 +214,7 @@ export class Expression
             return;
         }
 
-        console.log("calculated result: " + result);
+        // console.log("calculated result: " + result);
 
         if(this.type == ExpressionType.Assignment)
         {
@@ -208,6 +235,22 @@ export class Expression
         else if(this.type == ExpressionType.Print)
         {
             OutputPrint(result.toString());
+        }
+        else if (this.type == ExpressionType.Index)
+        {
+            if(typeof result != "number") 
+            {
+                OutputError("Cannot index by a " + typeof result);
+                return;
+            }
+
+            if(typeof this.owner!.dataValue != "string")
+            {
+                OutputError("Cannot index a " + typeof this.owner!.dataValue);
+                return;
+            }
+
+            this.owner!.dataValue = (<string>this.owner?.dataValue)[<number>result];
         }
         
         this.resultCalculated = true;
@@ -239,7 +282,8 @@ export enum BooleanOperator {
 
 export enum ExpressionType {
     Assignment,
-    Print
+    Print,
+    Index
 }
 
 

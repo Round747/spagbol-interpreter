@@ -2,6 +2,11 @@ import { allStartTiles, CreateTileMapFromString, GetTile } from "./tilemap";
 import { Spagbol, Direction, allWorkers, SetAllWorkers, allNewWorkers, SetAllNewWorkers } from "./spagbol";
 
 const inputArea: HTMLTextAreaElement = <HTMLTextAreaElement>document.getElementById("input-text-area")!;
+inputArea.addEventListener("input", function() {
+    localStorage.setItem("input-box",this.value);
+});
+
+inputArea.value = localStorage.getItem("input-box") ?? inputArea.value;
 
 export let isProgramRunning = false;
 export let isProgramPaused = false;
@@ -14,7 +19,6 @@ export function InitialiseProgram()
     cycles = 0;
     cyclesElement.textContent = cycles.toString();
     ClearConsole();
-    CalculateCanvasSize();
 
     // remove all workers
     SetAllWorkers([]);
@@ -59,14 +63,14 @@ export function CreateWorkers()
         
         let direction = Direction.South;
 
-        console.log(GetTile(tile.position.Relative(direction)));
+        // console.log(GetTile(tile.position.Relative(direction)));
         
         while(!(GetTile(tile.position.Relative(direction)).CanMoveInto(direction)))
         {
             direction = Direction.Rotate(direction, "left");
             if(direction == Direction.South)
             {
-                console.log("No viable start rotation for worker");
+                OutputError("[Parser]: No viable start rotation for worker");
                 return;
             }
         }
@@ -83,10 +87,14 @@ let intervalId: number;
 const cyclesElement: HTMLParagraphElement = <HTMLParagraphElement>document.getElementById("cycles");
 let cycles: number = 0;
 
+tickRate.value = localStorage.getItem("tick-rate") ?? tickRate.value;
+
+tickRate.addEventListener("input", function() {
+    localStorage.setItem("tick-rate", this.value);
+});
+
 export function RunProgram()
-{
-    console.log(isProgramPaused + ", " + isProgramRunning);
-    
+{    
     if(isProgramRunning && !isProgramPaused) return;
 
     if(!isProgramRunning && !isProgramPaused) 
@@ -162,13 +170,22 @@ export function PauseProgram()
     clearInterval(intervalId);
 }
 
-const output = document.getElementById("output");
+const output = document.getElementById("output")!;
+const additive: HTMLInputElement = <HTMLInputElement>document.getElementById("additive")!;
 
 export function OutputPrint(message: string)
 {
-    let newElement = document.createElement("tr");
-    newElement.innerHTML = "<td>" + message + "</td";
-    output!.appendChild(newElement);
+    if(additive.checked)
+    {   
+        output.innerHTML += message;
+    }
+    else
+    {
+        let newElement = document.createElement("tr");
+        newElement.innerHTML = "<td>" + message + "</td";
+        output.appendChild(newElement);        
+    }
+
 }
 
 export function OutputError(message: string)
@@ -189,10 +206,14 @@ function ClearConsole()
 const canvas: HTMLCanvasElement = <HTMLCanvasElement>document.getElementById("visualise")!;
 const context = canvas.getContext("2d")!;
 
-const cellHeight = 19;
-const cellWidth = 8.8;
+export const cellHeight = 19;
+export const cellWidth = 8.8;
 
 const colourfulWorkers: HTMLInputElement = <HTMLInputElement>document.getElementById("colourful-workers");
+
+CalculateCanvasSize();
+
+new ResizeObserver(CalculateCanvasSize).observe(inputArea);
 
 function CalculateCanvasSize()
 {

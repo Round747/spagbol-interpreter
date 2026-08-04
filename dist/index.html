@@ -7,9 +7,17 @@
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
+
     <h1>Spagbol</h1>
-    <p>An esoteric programming language created by Liam Latz. Read about it and see example programs on <a href="https://github.com/Round747/spagbol-interpreter">Github.</a></p>
+    <p>An esoteric programming language created by Liam Latz. Read about it and see example programs on <a href="https://github.com/Round747/spagbol-interpreter" target="_blank">Github.</a></p>
+    <div>
+    
+        <div class="button" id="text-box-editor">Text box</div><div class="button" id="grid-editor">Editor</div><div class="vr"></div> Cell grid: <input type="checkbox" id="cell-grid" checked><div class="vr"></div> <div class="button" onclick="prompt('press Ctrl+c to copy:\n\n' + localStorage.getItem('input-box-backup'), localStorage.getItem('input-box-backup'))">Load backup</div> <span style="color: gray; font-size: 0.75rem;">(Created every 3 minutes)</span>
+    </div>
     <div id="code-container">
+        <div id="cell-grid-overlay"></div>
+        <canvas id="editor-canvas"></canvas>
+        <canvas id="visualise"></canvas>
 <textarea name="" id="input-text-area" cols="80" rows="20">
                    /----------------------------------------------------------\
                    |                             /-------------------(-)-x    |
@@ -31,7 +39,6 @@
                                 |         |      
                                 \--{--3}--/
 </textarea>
-        <canvas id="visualise"></canvas>
     </div>
 
     <br>
@@ -45,8 +52,10 @@
     <br>
     <div class="button" id="calculate-program">Instant</div>
     <span style="margin-left: 0.25rem;">colourful workers:</span>
-    <input type="checkbox" name="" id="colourful-workers">
-    <h2>Output</h2>
+    <input type="checkbox" name="" id="colourful-workers" checked>
+    <div>
+        <h2 style="display: inline-block;">Output</h2> <div class="vr"></div> Additive: <input type="checkbox" name="" id="additive">
+    </div>
     <hr>
     <table id="output"></table>
 

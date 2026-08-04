@@ -32,9 +32,11 @@ export function CreateTileMapFromString(input: string)
             switch(character)
             {
                 case "(":
+                case "[":
                 case "{": // assignment expression
                     let type: ExpressionType;
                     if(character == "(") type = ExpressionType.Print;
+                    else if(character == "[") type = ExpressionType.Index;
                     else type = ExpressionType.Assignment;
 
                     let openingPos: Vector2 = new Vector2(x,y); // remember the brace for when the tile is created (the expression is needed in the constructor)
@@ -142,7 +144,15 @@ function GetOperand(lines: string[], x: number, y:number): [number | string | Sp
             operand = lhsVariableV;
             x++;
             break;
-        case "-": // horizontal line var
+        case "-": // horizontal line var or start of negative number literal
+
+            // if character following is a number than the - is a negative sign not a horizontal var
+            if(/[0-9]/.test(lines[y][x + 1])) // number literal
+            {
+                ParseNumber();
+                break;
+            }
+
             let lhsVariableH = new HorizontalExpressionVariableTile(new Vector2(x,y));
             tileMap[y][x] = lhsVariableH; // add tile to map
             operand = lhsVariableH;
@@ -155,7 +165,7 @@ function GetOperand(lines: string[], x: number, y:number): [number | string | Sp
 
             while(lines[y][x] != "\"")
             {   
-                console.log("character " + lines[y][x]);
+                // console.log("character " + lines[y][x]);
                 
                 tileMap[y][x] = new HorizontalLineTile(new Vector2(x,y), lines[y][x]);
                 lhsString += lines[y][x];
@@ -164,7 +174,7 @@ function GetOperand(lines: string[], x: number, y:number): [number | string | Sp
 
             tileMap[y][x] = new HorizontalLineTile(new Vector2(x,y), lines[y][x]); // closing quote
             x++;
-            console.log("parsed string " + lhsString);
+            console.log("parsed string \"" + lhsString + "\"");
             
             operand = lhsString;
             break;
@@ -174,40 +184,43 @@ function GetOperand(lines: string[], x: number, y:number): [number | string | Sp
             operand = lhsLineInput;
             x++;
             break;
-        case "%": // read key input
-            break;
         default:
             
             if(/[0-9]/.test(lines[y][x])) // number literal
             {
-                tileMap[y][x] = new HorizontalLineTile(new Vector2(x,y), lines[y][x]);
-                let lhsNumberString: string = lines[y][x];
-                x++;
-                let decimalPoint = false;
-                while(/[0-9.]/.test(lines[y][x]))
-                {
-                    if(decimalPoint && lines[y][x] == ".") // found a second one
-                    {
-                        OutputError("[Parser]: Invalid number in expression.");
-                        break;
-                    }
-
-                    if(lines[y][x] == ".") decimalPoint = true;
-                    lhsNumberString += lines[y][x];
-                    tileMap[y][x] = new HorizontalLineTile(new Vector2(x,y), lines[y][x]);
-                    x++
-                }
-
-                console.log("got number " + lhsNumberString);
-                
-
-                let lhsNumber = parseFloat(lhsNumberString);
-                operand = lhsNumber;
+                ParseNumber();
             }
             break;
     }
 
     return [operand, x];
+
+    function ParseNumber()
+    {
+        tileMap[y][x] = new HorizontalLineTile(new Vector2(x,y), lines[y][x]);
+        let lhsNumberString: string = lines[y][x];
+        x++;
+        let decimalPoint = false;
+        while(/[0-9.]/.test(lines[y][x]))
+        {
+            if(decimalPoint && lines[y][x] == ".") // found a second one
+            {
+                OutputError("[Parser]: Invalid number in expression.");
+                break;
+            }
+
+            if(lines[y][x] == ".") decimalPoint = true;
+            lhsNumberString += lines[y][x];
+            tileMap[y][x] = new HorizontalLineTile(new Vector2(x,y), lines[y][x]);
+            x++
+        }
+
+        console.log("parsed number " + lhsNumberString);
+        
+
+        let lhsNumber = parseFloat(lhsNumberString);
+        operand = lhsNumber;
+    }
 }
 
 export function CreateTileFromCharacter(char: string, position: Vector2): Spagbol.Tile
@@ -223,6 +236,8 @@ export function CreateTileFromCharacter(char: string, position: Vector2): Spagbo
         case ":": return new IncrementDataTile(position);
         case "~": return new DecrementDataTile(position);
         case "#": return new NullifyBooleanTile(position);
+        case "%": return new ConvertToAsciiTile(position);
+        case "?": return new CheckTypeTile(position);
         case "<": return new BranchTile(position, Direction.West, "<");
         case ">": return new BranchTile(position, Direction.East, ">");
         case "v": return new BranchTile(position, Direction.South, "v");
@@ -230,6 +245,7 @@ export function CreateTileFromCharacter(char: string, position: Vector2): Spagbo
         case "x": return new EndLineTile(position);
         case "\"": return new VerticalSwitchTile(position);
         case "=": return new HorizontalSwitchTile(position);
+        case "&": return new ClearConsoleTile(position);
         case "*":
             let tile = new StartTile(position);
             allStartTiles.push(tile);
@@ -250,6 +266,9 @@ export function GetTile(position: Vector2): Spagbol.Tile
 // --------------------------------------------------------------
 
 // #region tiles
+
+// probably shouldn't have made each location in the tilemap have it's own instance of a class but it's too late for that now :( 
+// RIP your ram if the program is too large
 
 // a line tile that rotates the worker
 export class ForwardSlashCornerTile extends Spagbol.Tile 
@@ -443,6 +462,67 @@ export class NullifyBooleanTile extends Spagbol.Tile
     EnterTile(worker: Spagbol.Worker): void { worker.booleanValue = null; }
 }
 
+// a line tile that wipes the console
+export class ClearConsoleTile extends Spagbol.Tile 
+{
+    constructor(position: Vector2)
+    {
+        super([DirectionPriority.Can,
+            DirectionPriority.Can,
+            DirectionPriority.Can,
+            DirectionPriority.Can
+        ], position, "&");
+    }
+
+    EnterTile(worker: Spagbol.Worker): void { document.getElementById("output")!.innerHTML = "" }
+}
+
+// a line tile that nullifies a workers boolean value
+export class ConvertToAsciiTile extends Spagbol.Tile 
+{
+    constructor(position: Vector2)
+    {
+        super([DirectionPriority.Can,
+            DirectionPriority.Can,
+            DirectionPriority.Can,
+            DirectionPriority.Can
+        ], position, "%");
+    }
+
+    EnterTile(worker: Spagbol.Worker): void {
+        if(typeof worker.dataValue == "string")
+        {
+            worker.dataValue = worker.dataValue.charCodeAt(0);
+        }
+        else 
+        {
+            if(worker.dataValue < 0) 
+            {
+                OutputError("[Interpreter]: Ascii index less than zero.");
+                return;
+            }
+            worker.dataValue = String.fromCharCode(worker.dataValue);
+        }
+    }
+}
+
+// a line tile that nullifies a workers boolean value
+export class CheckTypeTile extends Spagbol.Tile 
+{
+    constructor(position: Vector2)
+    {
+        super([DirectionPriority.Can,
+            DirectionPriority.Can,
+            DirectionPriority.Can,
+            DirectionPriority.Can
+        ], position, "?");
+    }
+
+    EnterTile(worker: Spagbol.Worker): void {
+        worker.booleanValue = (typeof worker.dataValue == "string");
+    }
+}
+
 // a line tile that nullifies a workers boolean value
 export class BranchTile extends Spagbol.Tile 
 {
@@ -463,7 +543,7 @@ export class BranchTile extends Spagbol.Tile
         // can enter through tile specified in constructor
         priorities[<number>facingDirection] = DirectionPriority.Can;
 
-        console.log(priorities[<number>facingDirection]);
+        // console.log(priorities[<number>facingDirection]);
         
 
         super(priorities, position, character);
@@ -798,7 +878,7 @@ export class HorizontalExpressionVariableTile extends Spagbol.Tile
     }
 
     EnterTile(worker: Spagbol.Worker): void {
-        console.log("trying to calculate result");
+        // console.log("trying to calculate result");
         
         if(!this.parentExpression!.resultCalculated) this.parentExpression?.TryCalculateResult();
     }
@@ -822,7 +902,7 @@ export class VerticalExpressionVariableTile extends Spagbol.Tile
     }
 
     EnterTile(worker: Spagbol.Worker): void {
-        console.log("trying to calculate result");
+        // console.log("trying to calculate result");
         
         if(!this.parentExpression!.resultCalculated) this.parentExpression?.TryCalculateResult();
     }

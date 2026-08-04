@@ -1,5 +1,7 @@
 import { StepProgram, InitialiseProgram, RunProgram, StopProgram, InstantRunProgram, isProgramRunning, SetIsProgramRunning, PauseProgram, RestartProgram, SetIsProgramPaused } from "./program";
 
+import "./editor";
+
 document.getElementById("step-program")!.addEventListener("click", function() {
     if(!isProgramRunning) 
     {
