@@ -55,7 +55,7 @@ The program is automatically saved to local storage when edited, so that program
 
 - Use the arrow keys to move the cursor, or set its position with left click.
 - Typing will insert characters at the specified location, and move the cursor in the direction that it was last moving, allowing for typing backwards and upwards.
-- Typing a mirror tile <code>\\</code> or <code>/</code> will change the typing direction respectively, allowing for easy path drawing.
+- Typing a mirror tile <code>\\</code> or <code>/</code> will change the typing direction accordingly, allowing for easy path drawing.
 - Click and drag an area of the program to select it. You can drag this selection to move that portion of the program, or hold left control and drag to duplicate it.
 - Pressing Ctrl+Z or Ctrl+Shift+Z Will undo or redo changes made to the code.
 
